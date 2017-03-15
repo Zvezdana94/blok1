@@ -1,0 +1,6 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Client.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Master.cpp
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(74): warning C4996: 'inet_addr': Use inet_pton() or InetPton() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  c:\program files (x86)\windows kits\8.1\include\um\winsock2.h(1850): note: see declaration of 'inet_addr'
+  WinSockClient.vcxproj -> C:\Users\Zvezdana\Documents\GitHub\blok1\ProjServerSide\Debug\Master.exe
+  WinSockClient.vcxproj -> C:\Users\Zvezdana\Documents\GitHub\blok1\ProjServerSide\Debug\Master.pdb (Full PDB)
