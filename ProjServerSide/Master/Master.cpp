@@ -13,15 +13,19 @@
 
 #define SERVER_SLEEP_TIME 50
 #define DEFAULT_BUFLEN 512 //ovo cemo menjati
-#define DEFAULT_PORT 27016
+//#define DEFAULT_PORT 27016
 #define BUFFER_SIZE 20
 
 #define CLIENT_PORT_SERVER "27019" //za komunikaciju sa klijentom
 #define NODE_PORT_SERVER "27017" //za komunikaciju sa node-om
 
 std::map<int, SOCKET> nodeSockets;
+std::map<int, SOCKET> clientSockets;
+
 std::map<int, HANDLE> nodeReceiverHandle;
 std::map<int, HANDLE> nodeSenderHandle; //Da li mi ovo treba?
+
+std::map<int, HANDLE> clientReceiverHandle;
 
 int num = 0;
 char * ipAdressList[10]; //lupila sam broj
@@ -154,17 +158,17 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 		if (iResult > 0) {
 			nodeId = *(int*)recvbuf;
 
-			
+
 			nodeSockets.insert(std::make_pair(nodeId, acceptedNodeSocket));
 
 			int numberOfAdresses = 0;
 			int j = 0;
 			bool bla = false;
-			int messageSize = 10*15; //ovo mora na neki lepsi nacin da se napise,a ne ovako
+			int messageSize = 10 * 15; //mozda promeniti da ne bude 15, vec 16 ili sta vec
 			messageToSend = (char*)calloc(messageSize, sizeof(char));
 			int sizeBefore = 0;
 			for (j; j < 10; j++) {
-				
+
 				//messageToSend = (char*)calloc(messageSize, sizeof(char));
 				int currSize = strlen(ipAdressList[j]) + 1;
 				//int messageSize = strlen(ipAdressList[j]) + 1;
@@ -172,7 +176,7 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 				if (currSize > 1) {
 					memcpy(messageToSend + sizeBefore, ipAdressList[j], strlen(ipAdressList[j]));
 					char *help = "\n";
-					memcpy(messageToSend + sizeBefore+strlen(ipAdressList[j]), help, strlen(help));
+					memcpy(messageToSend + sizeBefore + strlen(ipAdressList[j]), help, strlen(help));
 					sizeBefore += strlen(ipAdressList[j]);
 					sizeBefore += 1;
 					numberOfAdresses++;
@@ -181,8 +185,8 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 				}
 			}
 
-					/*messageToSend = (char*)calloc(messageSize, sizeof(char));
-					memcpy(messageToSend, ipAdressList[j], strlen(ipAdressList[j]));*/
+			/*messageToSend = (char*)calloc(messageSize, sizeof(char));
+			memcpy(messageToSend, ipAdressList[j], strlen(ipAdressList[j]));*/
 			if (bla) {
 				while (1) {
 					iResult = tryToSelectOnce(acceptedNodeSocket, true);
@@ -204,7 +208,7 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 							break;
 						}
 						else if (iResult == 1) { //validno
-							//printf(" %d ", j + 1);
+												 //printf(" %d ", j + 1);
 							break;
 						}
 					}
@@ -212,7 +216,7 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 				free(messageToSend);
 				Sleep(30);
 			}
-				//}
+			//}
 			//}
 
 
@@ -267,6 +271,10 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 }
 
 DWORD WINAPI listenForClients(LPVOID lpParam) {
+
+	char *messageToSend;
+	int size;
+
 	HANDLE clientReceiver, clientSender;
 	DWORD clientReceiver_Id, clientSender_Id;
 
@@ -367,7 +375,59 @@ DWORD WINAPI listenForClients(LPVOID lpParam) {
 		if (iResult > 0) {
 			nodeId = *(int*)recvbuf;
 
-			//clientSockets.insert(std::make_pair(nodeId, acceptedClientSocket));
+			clientSockets.insert(std::make_pair(nodeId, acceptedClientSocket));
+
+			int numberOfAdresses = 0;
+			int j = 0;
+			bool bla = false;
+			int messageSize = 10 * 15; // mozda treba 16 ili nesto drugo
+			messageToSend = (char*)calloc(messageSize, sizeof(char));
+			int sizeBefore = 0;
+			for (j; j < 10; j++) {
+				int currSize = strlen(ipAdressList[j]) + 1;
+
+				if (currSize > 1) {
+					memcpy(messageToSend + sizeBefore, ipAdressList[j], strlen(ipAdressList[j]));
+					char *help = "\n";
+					memcpy(messageToSend + sizeBefore + strlen(ipAdressList[j]), help, strlen(help));
+					sizeBefore += strlen(ipAdressList[j]);
+					sizeBefore += 1;
+					numberOfAdresses++;
+					bla = true;
+				}
+			}
+
+			if (bla) {
+				while (1) {
+					iResult = tryToSelectOnce(acceptedClientSocket, true);
+
+					if (iResult == SOCKET_ERROR) {
+						printf("select failed with error: %d\n", WSAGetLastError());
+						closesocket(acceptedClientSocket);
+						WSACleanup();
+						return 1;
+					}
+					else if (iResult == 0) {
+						printf("\nthere is no ready buffers for sending...");
+						Sleep(10);
+					}
+					else if (iResult == 1) {
+						iResult = sendMessage(acceptedClientSocket, messageToSend, messageSize);
+						if (iResult == SOCKET_ERROR || iResult == 0 || iResult == 2) { //pocistiti, pozatvarati sve
+							sizeBefore = 0;
+							break;
+						}
+						else if (iResult == 1) { //validno
+												 //printf(" %d ", j + 1);
+							break;
+						}
+					}
+				}
+				free(messageToSend);
+				Sleep(30);
+			}
+
+
 
 			//clientReceiver = CreateThread(NULL, 0, &getFromClient, &nodeId, 0, &clientReceiver_Id);
 			//clientSender = CreateThread(NULL, 0, &sendToClient, &nodeId, 0, &clientSender_Id);
@@ -411,20 +471,20 @@ DWORD WINAPI listenForClients(LPVOID lpParam) {
 		return 1;
 	}
 
-	closesocket(acceptedNodeSocket);
-	closesocket(listenNodeSocket);
+	closesocket(acceptedClientSocket);
+	closesocket(listenClientSocket);
 
 	return 0;
 }
 
-int __cdecl main(int argc, char **argv) 
-{	
+int __cdecl main(int argc, char **argv)
+{
 	HANDLE clientsListener, nodeListener;
 	DWORD clientsListener_Id, nodeListener_Id;
 
-	int i=0;
+	int i = 0;
 	int result;
-	int iResult;	
+	int iResult;
 
 	unsigned long int nonBlockingMode = 1;
 
@@ -436,19 +496,19 @@ int __cdecl main(int argc, char **argv)
 		ipAdressList[k] = "";
 	}
 
-    // Validate the parameters
-    if (argc != 2)
-    {
-        printf("usage: %s server-name\n", argv[0]);
-        return 1;
-    }
+	// Validate the parameters
+	if (argc != 2)
+	{
+		printf("usage: %s server-name\n", argv[0]);
+		return 1;
+	}
 
-    if(InitializeWindowsSockets() == false)
-    {
+	if (InitializeWindowsSockets() == false)
+	{
 		// we won't log anything since it will be logged
 		// by InitializeWindowsSockets() function
 		return 1;
-    }
+	}
 
 	nodeListener = CreateThread(NULL, 0, &listenForNodes, (LPVOID)0, 0, &nodeListener_Id);
 	clientsListener = CreateThread(NULL, 0, &listenForClients, (LPVOID)0, 0, &clientsListener_Id);
@@ -456,11 +516,11 @@ int __cdecl main(int argc, char **argv)
 	/*napraviti ovde neku petlju koja proverava da li treba da zatvori konekcije
 	u zavisnosti od statusnih vrednosti koje postavljaju niti, a ticu se socketa...*/
 	/*while (1) {
-		if (!otherServerAlive) {
-			cleanup();
-			break;
-		}
-		Sleep(500);
+	if (!otherServerAlive) {
+	cleanup();
+	break;
+	}
+	Sleep(500);
 	}*/
 
 	//cleanup();
@@ -468,18 +528,18 @@ int __cdecl main(int argc, char **argv)
 
 	SAFE_DELETE_HANDLE(nodeListener);
 
-    return 0;
+	return 0;
 }
 
 bool InitializeWindowsSockets()
 {
-    WSADATA wsaData;
+	WSADATA wsaData;
 	// Initialize windows sockets library for this process
-    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0)
-    {
-        printf("WSAStartup failed with error: %d\n", WSAGetLastError());
-        return false;
-    }
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	{
+		printf("WSAStartup failed with error: %d\n", WSAGetLastError());
+		return false;
+	}
 	return true;
 }
 

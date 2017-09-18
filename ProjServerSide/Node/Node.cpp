@@ -13,7 +13,7 @@
 #define SAFE_DELETE_HANDLE(a)  if(a){CloseHandle(a);} 
 
 #define DEFAULT_BUFLEN 512
-#define DEFAULT_PORT "27016"
+//#define DEFAULT_PORT "27016"
 #define BUFFER_SIZE 20
 
 #define MASTER_PORT_CLIENT 27017
@@ -50,8 +50,9 @@ int tryToSelectOnce(SOCKET acceptedSocket, bool isSend);
 
 DWORD WINAPI getFromMaster(LPVOID lpParam) {
 	char ack[4];
-	int iResult;
+	int iResult, success;
 	char recvbuf[DEFAULT_BUFLEN];
+	//int id = *(int *)lpParam;
 
 	while (1) {
 		//iResult = tryToSelectOnce(communicationSocket, false);
@@ -69,24 +70,30 @@ DWORD WINAPI getFromMaster(LPVOID lpParam) {
 		if (iResult == 1) {
 			char *ipAdress = recvbuf;
 
+
+			char *list[10];
+			int l = 0;
 			char *help;
-			printf("Splittin string into tokens:\n");
+			//printf("Splittin string into tokens:\n");
 			help = strtok(ipAdress, "\n");
 			while (help != NULL) {
-				printf("%s\n", help);
-				//list[l] = help;
-				//l++;
+				//printf("%s\n", help);
+				list[l] = help;
+				l++;
 
 				//ovde treba povezati node sa ostalim node-ovima
 				connectWithNode(help);
-				
+
+
 				help = strtok(NULL, "\n");
 			}
+			//printf(ipAdress);
 		}
 		else if (iResult == 0 || iResult == SOCKET_ERROR) {
 			printf("\nReceive message nije uspeo");
 			break;
 		}
+
 		Sleep(2);
 	}
 }
@@ -175,6 +182,8 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 			return 1;
 		}
 
+		printf("\nNode accepted");
+
 		iResult = ioctlsocket(acceptedNodeSocket, FIONBIO, &nonBlockingMode);
 		if (iResult == SOCKET_ERROR) {
 			printf("ioctlsocket failed with error: %ld\n", WSAGetLastError());
@@ -194,7 +203,8 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 		iResult = recv(acceptedNodeSocket, recvbuf, RECV_BUFFER_SIZE, 0);
 		if (iResult > 0) {
 			nodeId = *(int*)recvbuf;
-			printf("\nNode with id %d accepted", nodeId);
+
+			printf("\nNode with id %d accepted", nodeId); //cisto zbog ispisa
 
 			nodeSockets.insert(std::make_pair(nodeId, acceptedNodeSocket));
 
@@ -253,15 +263,17 @@ int __cdecl main(int argc, char **argv)
 
 	char initialMessage[4];
 	int iResult;
-	
-	unsigned long int nonBlockingMode = 1;	
+
+	unsigned long int nonBlockingMode = 1;
+
+
 
 	if (argc != 2)
 	{
 		printf("usage: %s server-name\n", argv[0]);
 		return 1;
 	}
-    
+
 	if (InitializeWindowsSockets() == false)
 	{
 		return 1;
@@ -270,7 +282,7 @@ int __cdecl main(int argc, char **argv)
 	connectMasterSocket = socket(AF_INET,
 		SOCK_STREAM,
 		IPPROTO_TCP);
-   
+
 	if (connectMasterSocket == INVALID_SOCKET)
 	{
 		printf("socket failed with error: %ld\n", WSAGetLastError());
@@ -309,21 +321,21 @@ int __cdecl main(int argc, char **argv)
 	closesocket(connectMasterSocket);
 	WSACleanup();
 
-	SAFE_DELETE_HANDLE(nodeListener);
-	SAFE_DELETE_HANDLE(receiver);
+	//SAFE_DELETE_HANDLE(sender);
+	//SAFE_DELETE_HANDLE(receiver);
 
 	return 0;
 }
 
 bool InitializeWindowsSockets()
 {
-    WSADATA wsaData;
+	WSADATA wsaData;
 	// Initialize windows sockets library for this process
-    if (WSAStartup(MAKEWORD(2,2), &wsaData) != 0)
-    {
-        printf("WSAStartup failed with error: %d\n", WSAGetLastError());
-        return false;
-    }
+	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
+	{
+		printf("WSAStartup failed with error: %d\n", WSAGetLastError());
+		return false;
+	}
 	return true;
 }
 
@@ -411,11 +423,12 @@ int connectWithNode(char *ipAddr) {
 	//saljemo id
 	iResult = send(connectNodeSocket, initialMessage, sizeof(int), 0);
 	//napraviti sve provere pre i posle slanja
-
+	
 	if (tryToSelect(connectNodeSocket, false, SERVER_SLEEP_TIME) == SOCKET_ERROR) {
 		return SOCKET_ERROR;
 	}
 
+	//treba da primi kao odg id drugog node-a i da ga doda u mapu
 	iResult = recv(connectNodeSocket, recvbuf, RECV_BUFFER_SIZE, 0);
 	if (iResult > 0) {
 		nodeId = *(int*)recvbuf;
@@ -448,7 +461,7 @@ int receiveMessage(SOCKET acceptedSocket, char *recvbuf)
 			content = recvbuf + sizeof(MessageHeader);
 			for (i; i<(expectedSize - sizeof(MessageHeader)); i++)
 			{
-				printf("%c", *(content + i));
+			printf("%c", *(content + i));
 			}*/
 			printf("\n");
 		}
