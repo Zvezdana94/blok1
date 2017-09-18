@@ -1,0 +1,22 @@
+I napravila sam da master prosledjuje listu node-ova i node kom je poslato da izvuce te adrese iz stringa
+
+E ovako :D Sad nam vec treba vise racunara(bar 2) da bismo mogle da
+testiramo sa vise node-ova. 
+
+Testiranje da li master salje novom node-u ip adrese svih aktivnih node-ova:
+Ako hoces da proveris ono za ip adrese da se
+salje kad se pokrene 2,3,4,5 ili koliko vec node-ova,onda moras da
+zakomentarises u Node.cpp u 316.liniji ovaj poziv za thread i u
+85.liniji poziv f-je connectWithNode.
+
+Testiranje kacenja node-a na druge node-ove nakon sto primi njihove ip adrese:
+A na svom laptopu sam uspela da testiram sa 2 node-a to da li se
+konektuje node na node-ove iz liste koji su mu prosledjeni(tj.taj jedan
+node u listi u mom slucaju), a i to moze da se testira samo ako se
+solution projekta otvori u 2 prozora vs tj.2 puta i onda u jednom
+prozoru pokrecem master i jedan node, a u drugom solution-u
+zakomentarisem u Node.cpp u 316.liniji onaj poziv thread-a i onda
+pokrenem Node. (Jer inace izbacuje gresku jer se prave socketi sa istim
+ipAdress i Portom)
+
+***Ne zaboraviti da promenis ip adresu u properties projekata Node i Client!!!
