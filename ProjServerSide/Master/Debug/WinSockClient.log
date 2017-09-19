@@ -1,24 +1,24 @@
 ﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Client.vcxproj).  This can lead to incorrect clean and rebuild behavior.
   Master.cpp
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(58): warning C4101: 'nodeSender_Id': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(58): warning C4101: 'nodeReceiver_Id': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(57): warning C4101: 'nodeSender': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(65): warning C4101: 'size': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(57): warning C4101: 'nodeReceiver': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(278): warning C4101: 'clientReceiver': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(278): warning C4101: 'clientSender': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(279): warning C4101: 'clientReceiver_Id': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(279): warning C4101: 'clientSender_Id': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(276): warning C4101: 'size': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(527): warning C4473: 'scanf_s' : not enough arguments passed for format string
-  c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(527): note: placeholders and their parameters expect 1 variadic arguments, but 0 were provided
-  c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(527): note: the missing variadic argument 1 is required by format string '%d'
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(487): warning C4101: 'iResult': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(486): warning C4101: 'result': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(491): warning C4101: 'msgHeader': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(492): warning C4101: 'content': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(551): warning C4101: 'content': unreferenced local variable
-c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(664): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(57): warning C4101: 'nodeSender_Id': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(57): warning C4101: 'nodeReceiver_Id': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(56): warning C4101: 'nodeSender': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(64): warning C4101: 'size': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(56): warning C4101: 'nodeReceiver': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(274): warning C4101: 'clientReceiver': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(274): warning C4101: 'clientSender': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(275): warning C4101: 'clientReceiver_Id': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(275): warning C4101: 'clientSender_Id': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(272): warning C4101: 'size': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(523): warning C4473: 'scanf_s' : not enough arguments passed for format string
+  c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(523): note: placeholders and their parameters expect 1 variadic arguments, but 0 were provided
+  c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(523): note: the missing variadic argument 1 is required by format string '%d'
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(483): warning C4101: 'iResult': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(482): warning C4101: 'result': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(487): warning C4101: 'msgHeader': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(488): warning C4101: 'content': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(547): warning C4101: 'content': unreferenced local variable
+c:\users\zvezdana\documents\github\blok1\projserverside\master\master.cpp(660): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
   c:\program files (x86)\windows kits\10\include\10.0.10240.0\ucrt\string.h(119): note: see declaration of 'strcpy'
   WinSockClient.vcxproj -> C:\Users\Zvezdana\Documents\GitHub\blok1\ProjServerSide\Debug\Master.exe
   WinSockClient.vcxproj -> C:\Users\Zvezdana\Documents\GitHub\blok1\ProjServerSide\Debug\Master.pdb (Full PDB)

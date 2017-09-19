@@ -13,7 +13,6 @@
 
 #define SERVER_SLEEP_TIME 50
 #define DEFAULT_BUFLEN 512 //ovo cemo menjati
-//#define DEFAULT_PORT 27016
 #define BUFFER_SIZE 20
 
 #define CLIENT_PORT_SERVER "27019" //za komunikaciju sa klijentom
@@ -23,7 +22,7 @@ std::map<int, SOCKET> nodeSockets;
 std::map<int, SOCKET> clientSockets;
 
 std::map<int, HANDLE> nodeReceiverHandle;
-std::map<int, HANDLE> nodeSenderHandle; //Da li mi ovo treba?
+std::map<int, HANDLE> nodeSenderHandle;
 
 std::map<int, HANDLE> clientReceiverHandle;
 
@@ -117,7 +116,7 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 		WSACleanup();
 		return 1;
 	}
-	printf("Node Server initialized\n");
+	printf("\nNode Server initialized\n");
 
 	//---------------------------ACCEPT--------------------------------
 	//-----------------------------------------------------------------
@@ -158,7 +157,6 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 		if (iResult > 0) {
 			nodeId = *(int*)recvbuf;
 
-
 			nodeSockets.insert(std::make_pair(nodeId, acceptedNodeSocket));
 
 			int numberOfAdresses = 0;
@@ -181,7 +179,6 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 					sizeBefore += 1;
 					numberOfAdresses++;
 					bla = true;
-
 				}
 			}
 
@@ -208,7 +205,7 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 							break;
 						}
 						else if (iResult == 1) { //validno
-												 //printf(" %d ", j + 1);
+							//printf(" %d ", j + 1);
 							break;
 						}
 					}
@@ -218,7 +215,6 @@ DWORD WINAPI listenForNodes(LPVOID lpParam) {
 			}
 			//}
 			//}
-
 
 			addIpAdressToList(acceptedNodeSocket);
 
